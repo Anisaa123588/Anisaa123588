@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Battle Arena</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #0b1020;
+      color: white;
+    }
+
+    header {
+      background: #151d38;
+      padding: 18px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2d3965;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #6ee7ff;
+      font-size: 22px;
+    }
+
+    .wallet {
+      background: #26345e;
+      padding: 10px 16px;
+      border-radius: 20px;
+      color: #ffd76e;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px 18px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #19265b, #612c78);
+      border-radius: 20px;
+      padding: 35px;
+      margin-bottom: 25px;
+    }
+
+    .hero h2 {
+      font-size: 34px;
+      margin-top: 0;
+    }
+
+    .hero p {
+      color: #d5d8ec;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 13px 18px;
+      cursor: pointer;
+      font-weight: bold;
+      color: white;
+      background: #4969ff;
+    }
+
+    button:hover {
+      background: #6580ff;
+    }
+
+    .danger {
+      background: #e64f67;
+    }
+
+    .success {
+      background: #19a974;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: #151d38;
+      border: 1px solid #2b3864;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #80eaff;
+    }
+
+    .player {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #2b3864;
+    }
+
+    .player:last-child {
+      border-bottom: none;
+    }
+
+    .country {
+      color: #9ca8cc;
+      font-size: 13px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: #151d38;
+      max-width: 450px;
+      width: 100%;
+      border-radius: 18px;
+      padding: 25px;
+    }
+
+    .topup-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #202b50;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+
+    .close {
+      float: right;
+      color: #ff8796;
+      cursor: pointer;
+      font-size: 22px;
+    }
+
+    #status {
+      margin-top: 18px;
+      color: #7fffc1;
+      min-height: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>🌐 Global Battle Arena</h1>
+    <div class="wallet">💎 <span id="diamond">250</span> Diamond</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2> bermain bersama pemain seluruh dunia</h2>
+      <p>
+        Masuk ke arena, temukan lawan global, dan kumpulkan kemenangan.
+      </p>
+      <button onclick="startMatchmaking()">Mulai Matchmaking</button>
+      <div id="status"></div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>👤 Profil Pemain</h3>
+        <p>Nama: <strong>PlayerOne</strong></p>
+        <p>Level: 12</p>
+        <p>Rating: 1.240</p>
+        <button onclick="showTopup()">Top Up Diamond</button>
+      </div>
+
+      <div class="card">
+        <h3>🛒 Toko Item</h3>
+        <p>Skin, senjata, avatar, dan item eksklusif.</p>
+        <button onclick="buyItem()">Beli Skin - 100 💎</button>
+      </div>
+
+      <div class="card">
+        <h3>🏆 Peringkat Global</h3>
+        <div class="player">
+          <span>1. DragonKing<br><small class="country">🇯🇵 Jepang</small></span>
+          <strong>2.890</strong>
+        </div>
+        <div class="player">
+          <span>2. ShadowX<br><small class="country">🇺🇸 Amerika</small></span>
+          <strong>2.740</strong>
+        </div>
+        <div class="player">
+          <span>3. GarudaPro<br><small class="country">🇮🇩 Indonesia</small></span>
+          <strong>2.620</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🌍 Pemain Online</h3>
+        <p><strong id="online">1.284.392</strong> pemain aktif</p>
+        <button class="success" onclick="inviteFriend()">Undang Teman</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="topupModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeTopup()">×</span>
+      <h2>Top Up Diamond</h2>
+      <p>Pilih paket diamond:</p>
+
+      <div class="topup-option">
+        <span>100 Diamond<br>Rp10.000</span>
+        <button onclick="topup(100)">Beli</button>
+      </div>
+
+      <div class="topup-option">
+        <span>550 Diamond<br>Rp50.000</span>
+        <button onclick="topup(550)">Beli</button>
+      </div>
+
+      <div class="topup-option">
+        <span>1.200 Diamond<br>Rp100.000</span>
+        <button onclick="topup(1200)">Beli</button>
+      </div>
+
+      <p id="paymentStatus"></p>
+    </div>
+  </div>
+
+  <script>
+    let diamond = 250;
+
+    function updateDiamond() {
+      document.getElementById("diamond").textContent = diamond;
+    }
+
+    function showTopup() {
+      document.getElementById("topupModal").style.display = "flex";
+    }
+
+    function closeTopup() {
+      document.getElementById("topupModal").style.display = "none";
+    }
+
+    function topup(amount) {
+      document.getElementById("paymentStatus").textContent =
+        "Memproses pembayaran demo...";
+
+      setTimeout(() => {
+        diamond += amount;
+        updateDiamond();
+
+        document.getElementById("paymentStatus").textContent =
+          "Pembayaran berhasil. Diamond telah ditambahkan.";
+      }, 1200);
+    }
+
+    function buyItem() {
+      if (diamond < 100) {
+        alert("Diamond tidak cukup. Silakan top up.");
+        return;
+      }
+
+      diamond -= 100;
+      updateDiamond();
+      alert("Skin berhasil dibeli dan masuk ke inventory.");
+    }
+
+    function startMatchmaking() {
+      const status = document.getElementById("status");
+      status.textContent = "Mencari pemain dari seluruh dunia...";
+
+      setTimeout(() => {
+        status.textContent =
+          "Pertandingan ditemukan! Anda bermain bersama 7 pemain global.";
+      }, 2500);
+    }
+
+    function inviteFriend() {
+      alert("Undangan bermain telah dikirim kepada teman.");
+    }
+
+    updateDiamond();
+  </script>
+</body>
+</html>
